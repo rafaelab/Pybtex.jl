@@ -26,6 +26,26 @@ struct Unpublished <: BibType end
 
 # ----------------------------------------------------------------------------------------------- #
 #
+typeDict = Dict(
+	"article" => Article,
+	"book" => Book,
+	"booklet" => Booklet,
+	"conference" => Conference,
+	"inbook" => InBook,
+	"incollection" => InCollection,
+	"inproceedings" => InProceedings,
+	"manual" => Manual,
+	"mastersthesis" => MasterThesis,
+	"misc" => Misc,
+	"phdthesis" => PhdThesis,
+	"proceedings" => Proceedings,
+	"techreport" => TechReport,
+	"unpublished" => Unpublished
+	)
+
+
+# ----------------------------------------------------------------------------------------------- #
+#
 @doc """
 Returns the name of the type of the entry as a string.
 """
