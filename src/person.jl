@@ -1,3 +1,8 @@
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+Module for handling person names.
+"""
 struct PersonName
 	firstName::String
 	middleName::String
@@ -10,6 +15,11 @@ PersonName(firstName::String, middleName::String, lastName::String) = PersonName
 PersonName(firstName::String, lastName::String) = PersonName(firstName, "", lastName, "")
 
 
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+Converts a Pybtex person object to a `PersonName` object.
+"""
 function pybtexToPersonName(author)
 	firstName = ""
 	middleName = ""
@@ -55,3 +65,6 @@ function pybtexToPersonName(author)
 
 	return person
 end
+
+# ----------------------------------------------------------------------------------------------- #
+#
