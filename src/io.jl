@@ -1,3 +1,8 @@
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+This function provides a simple way to print a person's name to the console.
+"""
 function Base.show(io::IO, person::PersonName)
 	s = ""
 	s *= @sprintf("%s", person.firstName)
@@ -11,6 +16,12 @@ function Base.show(io::IO, person::PersonName)
 	print(io, s)
 end
 
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+This function provides a simple way to print a BibEntry to the console.
+"""
 function Base.show(io::IO, entry::BibEntry)	
 	s = ""
 	s *= @sprintf("bibkey: %s [%s]\n", entry.key, getType(entry))
@@ -48,3 +59,6 @@ function Base.show(io::IO, entry::BibEntry)
 
 	print(io, s)
 end
+
+# ----------------------------------------------------------------------------------------------- #
+#

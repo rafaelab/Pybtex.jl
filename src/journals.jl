@@ -1,3 +1,5 @@
+# ----------------------------------------------------------------------------------------------- #
+#
 journalsAbbreviations = Dict{String, String}(
 	"aap" => "Astron. Astrophys.",
 	"aj" => "Astron. J.",
@@ -88,9 +90,14 @@ journalFullNames = Dict{String, String}(
 	"solphys" => "Solar Physics",
 	"sovast" => "Soviet Astronomy",
 	"ssr" => "Space Science Reviews",
-)
+	)
 
-
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+Returns the journal abbreviation from the tag.
+For example, the tag "apj" returns "Astrophys. J.".
+"""
 function journalAbbreviationFromTag(tag::String)
 	if haskey(journalsAbbreviations, tag)
 		return journalsAbbreviations[tag]
@@ -100,6 +107,12 @@ function journalAbbreviationFromTag(tag::String)
 	end
 end
 
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+Returns the journal full name from the tag.
+For example, the tag "apj" returns "Astrophysical Journal".
+"""
 function journalFullNameFromTag(tag::String)
 	if haskey(journalFullNames, tag)
 		return journalFullNames[tag]
@@ -109,6 +122,13 @@ function journalFullNameFromTag(tag::String)
 	end
 end
 
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+Returns the journal tag from the full name.
+For example, the full name "Astrophysical Journal" returns "apj".
+This is essentially an inversion of `journalFullNameFromTag`.
+"""
 function journalTagFromFullName(fullName::String)
 	# exceptions
 	correctionDict = Dict{String, String}(
@@ -130,3 +150,6 @@ function journalTagFromFullName(fullName::String)
 	@warn "Journal tag not found for full name \"$fullName\". Returning empty string."
 	return ""
 end
+
+# ----------------------------------------------------------------------------------------------- #
+#
