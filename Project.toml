@@ -1,0 +1,14 @@
+name = "Pybtex"
+uuid = "c8fbd874-22fe-482d-9730-5f9c4aadbab0"
+authors = ["Rafael <rafaelab@users.noreply.github.com>"]
+version = "0.1.0"
+
+[deps]
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+PythonCall = "6099a3de-0909-46bc-b1f4-468b9a2dfc0d"
+
+[compat]
+LaTeXStrings = "1.4.0"
+Printf = "1.11.0"
+PythonCall = "0.9.23"
