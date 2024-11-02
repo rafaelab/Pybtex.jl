@@ -21,6 +21,7 @@ struct Misc <: BibType end
 struct PhdThesis <: BibType end
 struct Proceedings <: BibType end
 struct TechReport <: BibType end
+struct Thesis <: BibType end
 struct Unpublished <: BibType end
 
 
@@ -40,6 +41,7 @@ typeDict = Dict(
 	"phdthesis" => PhdThesis,
 	"proceedings" => Proceedings,
 	"techreport" => TechReport,
+	"thesis" => Thesis,
 	"unpublished" => Unpublished
 	)
 
