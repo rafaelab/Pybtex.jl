@@ -22,7 +22,11 @@ hasField(entry::BibEntry, field::String) = haskey(pyconvert(Dict, entry.info.fie
 @doc """
 This function returns a BibTeX entry from a BibTeX library.
 """
-getEntry(bib::BibLibrary, key) = BibEntry(key, bib.entries[key])
+function getEntry(bib::BibLibrary, key) 
+	t = stringPy2Jl(bib.entries[key].type)
+	T = typeDict[t]
+	return BibEntry{T}(key, bib.entries[key])
+end
 
 
 # ----------------------------------------------------------------------------------------------- #
@@ -39,12 +43,21 @@ end
 @doc """
 This function returns the authors of a BibTeX entry.
 The authors are returned as a vector of `PersonName` objects.
+
+If the authors field is not present, but editors are found, the editors are returned instead.
 """
 function getAuthors(entry::BibEntry)
-	authors = entry.info.persons["author"]
-	names = []
+	if isempty(entry.info.persons["author"])
+		if ! isempty(entry.info.persons["editor"])
+			return getEditors(entry)
+		else
+			@warn "No authors field in entry \"$(entry.key)\"."
+			return [PersonName("", "", "", "")]
+		end
+	end
 
-	for author in authors
+	names = []
+	for author in entry.info.persons["author"]
 		name = pybtexToPersonName(author)
 		push!(names, name)
 	end
@@ -59,11 +72,13 @@ This function returns the editors of a BibTeX entry.
 The editors are returned as a vector of `PersonName` objects.
 """
 function getEditors(entry::BibEntry)
-	authors = entry.info.persons["editors"]
-	names = []
+	if isempty(entry.info.persons["editor"])
+		return []
+	end
 
-	for author in authors
-		name = pybtexToName(author)
+	names = []
+	for author in entry.info.persons["editor"]
+		name = pybtexToPersonName(author)
 		push!(names, name)
 	end
 
@@ -79,6 +94,19 @@ function getTitle(entry::BibEntry)
 	end
 
 	s = entry.info.fields["title"]
+	s = stringPy2Jl(s)
+	return fixStrings(s)
+end
+
+# ----------------------------------------------------------------------------------------------- #
+#
+function getBookTitle(entry::BibEntry)
+	if ! hasField(entry, "title")
+		@warn "No booktitle field in entry \"$(entry.key)\"."
+		return ""
+	end
+
+	s = entry.info.fields["booktitle"]
 	s = stringPy2Jl(s)
 	return fixStrings(s)
 end
@@ -174,7 +202,6 @@ function getDOI(entry::BibEntry)
 	return hasField(entry, "doi") ? stringPy2Jl(entry.info.fields["doi"]) : ""
 end
 
-
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
@@ -182,6 +209,14 @@ This function returns the URL of the publication.
 """
 function getURL(entry::BibEntry)
 	return hasField(entry, "url") ? stringPy2Jl(entry.info.fields["url"]) : ""
+end
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+"""
+function getISBN(entry::BibEntry)
+	return hasField(entry, "isbn") ? stringPy2Jl(entry.info.fields["isbn"]) : ""
 end
 
 # ----------------------------------------------------------------------------------------------- #
@@ -211,6 +246,26 @@ function getBibTeX(entry::BibEntry)
 	return string(entry.info.to_string("bibtex"))
 end
 
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+This function returns the number of authors of a BibTeX entry.
+"""
+function numberOfAuthors(entry::BibEntry)
+	authors = getAuthors(entry)
+	return length(authors)
+end
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+This function returns the number of editors of a BibTeX entry.
+"""
+function numberOfEditors(entry::BibEntry)
+	editors = getEditors(entry)
+	return length(editors)
+end
 
 # ----------------------------------------------------------------------------------------------- #
 #
