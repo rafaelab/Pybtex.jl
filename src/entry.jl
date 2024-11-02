@@ -190,7 +190,13 @@ end
 This function returns the publisher of the publication.
 """
 function getPublisher(entry::BibEntry)
-	return hasField(entry, "publisher") ? stringPy2Jl(entry.info.fields["publisher"]) : ""
+	if ! hasField(entry, "publisher")
+		return ""
+	end
+
+	pub = stringPy2Jl(entry.info.fields["publisher"])
+
+	return fixStrings(pub)
 end
 
 # ----------------------------------------------------------------------------------------------- #
@@ -199,7 +205,13 @@ end
 This function returns the DOI of the publication.
 """
 function getDOI(entry::BibEntry)
-	return hasField(entry, "doi") ? stringPy2Jl(entry.info.fields["doi"]) : ""
+	if ! hasField(entry, "doi")
+		return ""
+	end
+
+	doi = stringPy2Jl(entry.info.fields["doi"])
+
+	return fixStrings(doi)
 end
 
 # ----------------------------------------------------------------------------------------------- #
@@ -208,7 +220,13 @@ end
 This function returns the URL of the publication.
 """
 function getURL(entry::BibEntry)
-	return hasField(entry, "url") ? stringPy2Jl(entry.info.fields["url"]) : ""
+	if ! hasField(entry, "url")
+		return ""
+	end
+
+	url = stringPy2Jl(entry.info.fields["url"])
+
+	return fixStrings(url)
 end
 
 # ----------------------------------------------------------------------------------------------- #
