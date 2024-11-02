@@ -178,6 +178,16 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+This function returns the electronic identifier of the publication.
+"""
+function getEId(entry::BibEntry)
+	return hasField(entry, "eid") ? stringPy2Jl(entry.info.fields["eid"]) : ""
+end
+	
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
 This function returns the location of the publication.
 """
 function getLocation(entry::BibEntry)
@@ -232,9 +242,27 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+This function returns the ISBN of the publication.
 """
 function getISBN(entry::BibEntry)
 	return hasField(entry, "isbn") ? stringPy2Jl(entry.info.fields["isbn"]) : ""
+end
+
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+This function returns the ADS URL of the publication.
+"""
+function getADSURL(entry::BibEntry)
+	if ! hasField(entry, "adsurl")
+		return ""
+	end
+
+	url = stringPy2Jl(entry.info.fields["adsurl"])
+	url = replace(url, "\\", "")
+
+	return fixStrings(url)
 end
 
 # ----------------------------------------------------------------------------------------------- #
@@ -258,12 +286,58 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+This function returns the school of the publication, if available.
+This is common for theses.
+"""
+function getSchool(entry::BibEntry)
+	if ! hasField(entry, "school")
+		@warn "No school field in entry \"$(entry.key)\"."
+		return ""
+	end
+
+	return stringPy2Jl(entry.info.fields["school"])
+end
+
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+This function returns the file name(s) of the publication.
+"""
+function getFileName(entry::BibEntry, libraryFolder::String)
+	if ! hasField(entry, "file")
+		@warn "No file(s) available for \"$(entry.key)\"."
+		return ""
+	end
+
+	s = stringPy2Jl(entry.info.fields["file"])
+	f = split(s, ";")
+
+	if length(f) == 1
+		return f[1]
+	else
+		return f
+	end
+end
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
 This function returns the BibTeX representation of the entry.
 """
 function getBibTeX(entry::BibEntry)
 	return string(entry.info.to_string("bibtex"))
 end
 
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+This function returns all fields of a BibTeX entry.
+"""
+function getAllFields(entry::BibEntry)
+	return keys(pyconvert(Dict, entry.info.fields))
+end
 
 # ----------------------------------------------------------------------------------------------- #
 #
