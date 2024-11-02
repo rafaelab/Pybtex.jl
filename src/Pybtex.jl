@@ -20,17 +20,19 @@ export
 	getPublisher,
 	getDOI,
 	getURL,
+	getISBN,
 	getAbstract,
 	getKeywords,
-	getBibTeX
+	getBibTeX,
+	getType,
+	numberOfAuthors,
+	numberOfEditors
 	
 
 
 using LaTeXStrings
 using Printf
 using PythonCall
-
-
 
 
 pybtex = pyimport("pybtex")
@@ -40,6 +42,7 @@ include("common.jl")
 include("database.jl")
 include("journals.jl")
 include("person.jl")
+include("types.jl")
 include("entry.jl")
 include("io.jl")
 
