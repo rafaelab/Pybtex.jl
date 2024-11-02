@@ -29,7 +29,7 @@ Base.getindex(db::BibLibrary, key) = db.entries[key]
 @doc """
 Returns the keys of the entries in the database.
 """
-Base.keys(db::BibLibrary) = keys(db.entries)
+Base.keys(db::BibLibrary) = String[stringPy2Jl(key) for key in db.entries.keys()]
 
 
 # ----------------------------------------------------------------------------------------------- #
@@ -54,6 +54,12 @@ Reads a bibtex database from a file and returns a `BibLibrary` object.
 function readBibtexDataBase(filename::String)
 	d = pyimport("pybtex.database").parse_file(filename)
 	return BibLibrary(d)
+end
+
+# ----------------------------------------------------------------------------------------------- #
+#
+function writeBibtexDataBase(bib::BibLibrary, filename::String)
+	bib.db.to_file(filename, bib_format = "bibtex")
 end
 
 

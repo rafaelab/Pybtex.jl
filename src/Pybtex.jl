@@ -4,6 +4,8 @@ export
 	BibLibrary,
 	BibEntry,
 	readBibtexDataBase,
+	writeBibtexDataBase,
+	hasField,
 	getEntry,
 	getAuthors,
 	getEditors,
@@ -26,7 +28,8 @@ export
 	getBibTeX,
 	getType,
 	numberOfAuthors,
-	numberOfEditors
+	numberOfEditors,
+	getAllFields
 	
 
 
