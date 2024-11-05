@@ -52,7 +52,10 @@ end
 Reads a bibtex database from a file and returns a `BibLibrary` object.
 """
 function readBibtexDataBase(filename::String)
-	d = pyimport("pybtex.database").parse_file(filename)
+	style = pyimport("pybtex.plugin").find_plugin("pybtex.style.formatting", "plain")()
+	parser = pyimport("pybtex.database.input.bibtex").Parser()
+	d = parser.parse_file(filename)
+
 	return BibLibrary(d)
 end
 
@@ -61,6 +64,7 @@ end
 function writeBibtexDataBase(bib::BibLibrary, filename::String)
 	bib.db.to_file(filename, bib_format = "bibtex")
 end
+
 
 
 # ----------------------------------------------------------------------------------------------- #
