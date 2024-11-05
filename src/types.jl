@@ -18,7 +18,7 @@ struct InProceedings <: BibType end
 struct Manual <: BibType end
 struct MasterThesis <: BibType end
 struct Misc <: BibType end
-struct PhdThesis <: BibType end
+struct PhDThesis <: BibType end
 struct Proceedings <: BibType end
 struct TechReport <: BibType end
 struct Thesis <: BibType end
@@ -38,7 +38,7 @@ typeDict = Dict(
 	"manual" => Manual,
 	"mastersthesis" => MasterThesis,
 	"misc" => Misc,
-	"phdthesis" => PhdThesis,
+	"phdthesis" => PhDThesis,
 	"proceedings" => Proceedings,
 	"techreport" => TechReport,
 	"thesis" => Thesis,
@@ -61,7 +61,7 @@ getTypeName(::Type{InProceedings}) = "inproceedings"
 getTypeName(::Type{Manual}) = "manual"
 getTypeName(::Type{MasterThesis}) = "mastersthesis"
 getTypeName(::Type{Misc}) = "misc"
-getTypeName(::Type{PhdThesis}) = "phdthesis"
+getTypeName(::Type{PhDThesis}) = "phdthesis"
 getTypeName(::Type{Proceedings}) = "proceedings"
 getTypeName(::Type{TechReport}) = "techreport"
 getTypeName(::Type{Unpublished}) = "unpublished"
