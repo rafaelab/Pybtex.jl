@@ -95,7 +95,7 @@ function getTitle(entry::BibEntry)
 
 	s = entry.info.fields["title"]
 	s = stringPy2Jl(s)
-	return fixStrings(s)
+	return removeCurlyBracesLimiters(s)
 end
 
 # ----------------------------------------------------------------------------------------------- #
@@ -108,7 +108,7 @@ function getBookTitle(entry::BibEntry)
 
 	s = entry.info.fields["booktitle"]
 	s = stringPy2Jl(s)
-	return fixStrings(s)
+	return removeCurlyBracesLimiters(s)
 end
 
 # ----------------------------------------------------------------------------------------------- #
@@ -206,7 +206,7 @@ function getPublisher(entry::BibEntry)
 
 	pub = stringPy2Jl(entry.info.fields["publisher"])
 
-	return fixStrings(pub)
+	return removeCurlyBracesLimiters(pub)
 end
 
 # ----------------------------------------------------------------------------------------------- #
@@ -221,7 +221,7 @@ function getDOI(entry::BibEntry)
 
 	doi = stringPy2Jl(entry.info.fields["doi"])
 
-	return fixStrings(doi)
+	return removeCurlyBracesLimiters(doi)
 end
 
 # ----------------------------------------------------------------------------------------------- #
@@ -233,10 +233,9 @@ function getURL(entry::BibEntry)
 	if ! hasField(entry, "url")
 		return ""
 	end
-
 	url = stringPy2Jl(entry.info.fields["url"])
 
-	return fixStrings(url)
+	return removeCurlyBracesLimiters(url)
 end
 
 # ----------------------------------------------------------------------------------------------- #
@@ -245,7 +244,8 @@ end
 This function returns the ISBN of the publication.
 """
 function getISBN(entry::BibEntry)
-	return hasField(entry, "isbn") ? stringPy2Jl(entry.info.fields["isbn"]) : ""
+	isbn = hasField(entry, "isbn") ? stringPy2Jl(entry.info.fields["isbn"]) : ""
+	return removeCurlyBracesLimiters(isbn)
 end
 
 
@@ -262,7 +262,7 @@ function getADSURL(entry::BibEntry)
 	url = stringPy2Jl(entry.info.fields["adsurl"])
 	url = replace(url, "\\", "")
 
-	return fixStrings(url)
+	return removeCurlyBracesLimiters(url)
 end
 
 # ----------------------------------------------------------------------------------------------- #

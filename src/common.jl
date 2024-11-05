@@ -1,32 +1,17 @@
 # ----------------------------------------------------------------------------------------------- #
 #
-"""
-This dictionary is used to clean up the strings from the bibtex file.
-It is used to remove the latex commands and other unwanted characters.
-"""
-hygenicDict = Dict{String, String}(
-	"{" => "",
-	"}" => "",
-	"\\\\\\\\\\" => "\\",
-	"\\\\\\\\" => "\\",
-	"\\\\\\" => "\\",
-	"\\\\" => "\\",
-	"\\" => "",
-	"\\\\&" => "\\&",
-	"\\\$" => "\$",
-)
-
-# ----------------------------------------------------------------------------------------------- #
-#
 @doc """
 This function fixes the strings from the bibtex file.
 """
-function fixStrings(s::AbstractString)
+function removeCurlyBracesLimiters(s::AbstractString)
 	r = s
-	for pair in hygenicDict
-		r = replace(r, pair)
+	if r[1] == '{' && r[2] ≠ '\\'
+		r = replace(r, "{" => "")
 	end
-
+	if r[end] == '}'
+		r = replace(r, "}" => "")
+	end
+	
 	return r
 end
 

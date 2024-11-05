@@ -32,7 +32,7 @@ function pybtexToPersonName(author)
 
 	if nFirstNames > 0
 		for i = 1 : nFirstNames
-			firstName *= stringPy2Jl(author.first_names[i - 1])
+			firstName *= removeCurlyBracesLimiters(stringPy2Jl(author.first_names[i - 1]))
 			if i < nFirstNames
 				firstName *= " "
 			end
@@ -41,7 +41,7 @@ function pybtexToPersonName(author)
 
 	if nMiddleNames > 0
 		for i = 1 : nMiddleNames
-			middleName *= stringPy2Jl(author.middle_names[i - 1])
+			middleName *= removeCurlyBracesLimiters(stringPy2Jl(author.middle_names[i - 1]))
 			if i < nMiddleNames
 				middleName *= " "
 			end
@@ -50,16 +50,12 @@ function pybtexToPersonName(author)
 
 	if nLastNames > 0
 		for i = 1 : nLastNames
-			lastName *= stringPy2Jl(author.last_names[i - 1])
+			lastName *= removeCurlyBracesLimiters(stringPy2Jl(author.last_names[i - 1]))
 			if i < nLastNames
 				lastName *= " "
 			end
 		end
 	end
-
-	firstName = fixStrings(firstName)
-	middleName = fixStrings(middleName)
-	lastName = fixStrings(lastName)
 
 	person = PersonName(firstName, middleName, lastName, suffix)
 
