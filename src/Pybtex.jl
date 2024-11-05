@@ -21,6 +21,7 @@ export
 	getLocation,
 	getPublisher,
 	getSchool,
+	getArXiv,
 	getDOI,
 	getURL,
 	getISBN,
