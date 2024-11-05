@@ -9,6 +9,9 @@ struct BibEntry{T <: BibType}
 	info::Py
 end
 
+
+Base.eltype(::Type{BibEntry{T}}) where {T} = T
+
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
@@ -72,13 +75,18 @@ This function returns the editors of a BibTeX entry.
 The editors are returned as a vector of `PersonName` objects.
 """
 function getEditors(entry::BibEntry)
-	if isempty(entry.info.persons["editor"])
+	if ! haskey(entry.info.persons, "editor")
+		return []
+	end
+
+	editors = entry.info.persons["editor"]
+	if isempty(editors)
 		return []
 	end
 
 	names = []
-	for author in entry.info.persons["editor"]
-		name = pybtexToPersonName(author)
+	for editor in editors
+		name = pybtexToPersonName(editor)
 		push!(names, name)
 	end
 
@@ -223,6 +231,23 @@ function getDOI(entry::BibEntry)
 
 	return removeCurlyBracesLimiters(doi)
 end
+
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+Get arXiv number, assuming it is in the eprint field.
+"""
+function getArXiv(entry::BibEntry)
+	if ! hasField(entry, "eprint")
+		return ""
+	end
+
+	arXiv = stringPy2Jl(entry.info.fields["eprint"])
+
+	return removeCurlyBracesLimiters(arXiv)
+end
+
 
 # ----------------------------------------------------------------------------------------------- #
 #
