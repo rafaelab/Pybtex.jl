@@ -34,12 +34,7 @@ export
 	getType,
 	numberOfAuthors,
 	numberOfEditors,
-	getAllFields,
-	removeKeys,
-	removeKeys!,
-	selectKeys,
-	selectKeys!
-	
+	getAllFields
 
 
 using LaTeXStrings
@@ -48,6 +43,7 @@ using PythonCall
 
 
 pybtex = pyimport("pybtex")
+pydb = pyimport("pybtex.database")
 
 
 include("common.jl")

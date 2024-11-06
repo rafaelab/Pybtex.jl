@@ -7,6 +7,17 @@ struct BibLibrary
 	db
 end
 
+BibLibrary() = BibLibrary(pydb.BibliographyData())
+
+
+function BibLibrary(entries::Vector{T}) where {T <: BibEntry}
+	db = pydb.BibliographyData()
+	for entry in entries
+		db.entries[entry.key] = entry
+	end
+	
+	return BibLibrary(db)
+end
 
 # ----------------------------------------------------------------------------------------------- #
 #
@@ -100,51 +111,6 @@ function Base.getproperty(bib::BibLibrary, v::Symbol)
 		return getfield(bib, v)
 	end
 end
-
-
-# ----------------------------------------------------------------------------------------------- #
-#
-@doc """ 
-Remove a set of keys from the database.
-Two methods are provided: `removeKeys!` (in-place) and `removeKeys` (returns a new database).
-"""
-function removeKeys!(bib::BibLibrary, interestKeys::Vector{String})
-	for key in interestKeys
-		if haskey(bib, key)
-			pop!(bib, key)
-		end
-	end
-end
-
-function removeKeys(bib::BibLibrary, interestKeys::Vector{String})
-	d = deepcopy(bib)
-	removeKeys!(d, interestKeys)
-	return d
-end
-
-removeKeys!(bib::BibLibrary, key::String) = removeKeys!(bib, [key])
-removeKeys(bib::BibLibrary, key::String) = removeKeys(bib, [key])
-
-# ----------------------------------------------------------------------------------------------- #
-#
-@doc """
-Returns a new `BibLibrary` object containing only the entries with the given keys.
-"""
-function selectKeys!(bib::BibLibrary, interestKeys::Vector{String})
-	allKeys = keys(bib)
-	selectedKeys = intersect(allKeys, interestKeys)
-	unwantedKeys = setdiff(allKeys, selectedKeys)
-	removeKeys!(bib, unwantedKeys)
-end
-
-function selectKeys(bib::BibLibrary, interestKeys::Vector{String})
-	d = deepcopy(bib)
-	selectKeys!(d, interestKeys)
-	return d
-end
-
-selectKeys!(bib::BibLibrary, key::String) = selectKeys!(bib, [key])
-selectKeys(bib::BibLibrary, key::String) = selectKeys(bib, [key])
 
 
 # ----------------------------------------------------------------------------------------------- #
