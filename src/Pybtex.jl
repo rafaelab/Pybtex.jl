@@ -34,7 +34,11 @@ export
 	getType,
 	numberOfAuthors,
 	numberOfEditors,
-	getAllFields
+	getAllFields,
+	removeKeys,
+	removeKeys!,
+	selectKeys,
+	selectKeys!
 	
 
 
