@@ -10,6 +10,11 @@ struct BibEntry{T <: BibType}
 end
 
 
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+This function returns the type of the BibTeX entry.
+"""
 Base.eltype(::Type{BibEntry{T}}) where {T} = T
 
 # ----------------------------------------------------------------------------------------------- #
@@ -18,19 +23,6 @@ Base.eltype(::Type{BibEntry{T}}) where {T} = T
 This function checks if a field is present in a BibTeX entry.
 """
 hasField(entry::BibEntry, field::String) = haskey(pyconvert(Dict, entry.info.fields), lowercase(field))
-
-
-# ----------------------------------------------------------------------------------------------- #
-#
-@doc """
-This function returns a BibTeX entry from a BibTeX library.
-"""
-function getEntry(bib::BibLibrary, key) 
-	t = stringPy2Jl(bib.entries[key].type)
-	T = typeDict[t]
-	return BibEntry{T}(key, bib.entries[key])
-end
-
 
 # ----------------------------------------------------------------------------------------------- #
 #

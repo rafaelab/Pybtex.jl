@@ -1,13 +1,13 @@
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
-This module provides a simple interface to read and manipulate bibtex databases.
+This provides a simple interface to read and manipulate bibtex databases.
 """
 struct BibLibrary
 	db
 end
 
-BibLibrary() = BibLibrary(pydb.BibliographyData())
+BibLibrary() = BibLibrary(pyimport("pybtex.database").BibliographyData())
 
 
 function BibLibrary(entries::Vector{T}) where {T <: BibEntry}
@@ -35,15 +35,6 @@ Returns the entry with the given key.
 Base.getindex(db::BibLibrary, key::AbstractString) = db.entries[key]
 
 
-# # ----------------------------------------------------------------------------------------------- #
-# #
-# @doc """
-# Returns the entry with the given key.
-# """
-# Base.get(db::BibLibrary, key::AbstractString, default) = get(db.entries, key, default)
-# Base.get(db::BibLibrary, key::AbstractString) = get(db.entries, key, nothing)
-
-
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
@@ -65,7 +56,9 @@ Base.pop!(db::BibLibrary, key::AbstractString) = db.entries.pop(key)
 @doc """
 Insert an entry into the database.
 """
-Base.insert!(db::BibLibrary, key::AbstractString, entry) = db.entries[key] = entry
+function Base.insert!(db::BibLibrary, entry::BibEntry) 
+	db.entries[entry.key] = entry
+end
 
 
 # ----------------------------------------------------------------------------------------------- #
@@ -110,6 +103,18 @@ function Base.getproperty(bib::BibLibrary, v::Symbol)
 	else
 		return getfield(bib, v)
 	end
+end
+
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+This function returns a BibTeX entry from a BibTeX library.
+"""
+function getEntry(bib::BibLibrary, key) 
+	t = stringPy2Jl(bib.entries[key].type)
+	T = typeDict[t]
+	return BibEntry{T}(key, bib.entries[key])
 end
 
 

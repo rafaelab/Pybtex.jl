@@ -43,17 +43,14 @@ using PythonCall
 
 
 pybtex = pyimport("pybtex")
-pydb = pyimport("pybtex.database")
-
 
 include("common.jl")
-include("database.jl")
 include("journals.jl")
 include("person.jl")
 include("types.jl")
 include("entry.jl")
+include("database.jl")
 include("io.jl")
-
 
 
 
