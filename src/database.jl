@@ -57,7 +57,7 @@ Base.pop!(db::BibLibrary, key::AbstractString) = db.entries.pop(key)
 Insert an entry into the database.
 """
 function Base.insert!(db::BibLibrary, entry::BibEntry) 
-	db.entries[entry.key] = entry
+	db.entries[entry.key] = entry.info
 end
 
 
@@ -134,7 +134,19 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 function writeBibtexDataBase(bib::BibLibrary, filename::String)
-	bib.db.to_file(filename, bib_format = "bibtex")
+	libraryStr = pyconvert(String, bib.db.to_string(bib_format = "bibtex"))
+
+	# now fix the file and remove things like `\textasciitilde{}`, etc
+	items = Dict{String, String}(
+		"\\textendash" => raw"–-",
+		"\\textemdash" => raw"–--",
+		"\\textasciitilde" => raw"~",
+		)
+	libraryStr2 = read(filename, String)
+	for key in keys(items)
+		libraryStr2 = replace(libraryStr2, key => items[key])
+	end
+	write(filename, libraryStr2)
 end
 
 
