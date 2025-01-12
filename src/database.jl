@@ -138,14 +138,22 @@ function writeBibtexDataBase(bib::BibLibrary, filename::String)
 
 	# now fix the file and remove things like `\textasciitilde{}`, etc
 	items = Dict{String, String}(
-		"\\textendash" => raw"–-",
-		"\\textemdash" => raw"–--",
-		"\\textasciitilde" => raw"~",
+		"\\textendash" => "–-",
+		"\\textemdash" => "–--",
+		"\\textasciitilde" => "~",
+		"\\&" => "&",
+		"\\_" => "_",
+		"\\%" => "%",
+		"\\#" => "#",
+		"\\~ " => "\\~",
+		"~ " => "~",
 		)
-	libraryStr2 = read(filename, String)
+
+	libraryStr2 = libraryStr
 	for key in keys(items)
 		libraryStr2 = replace(libraryStr2, key => items[key])
 	end
+
 	write(filename, libraryStr2)
 end
 
