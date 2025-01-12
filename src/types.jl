@@ -24,7 +24,6 @@ struct TechReport <: BibType end
 struct Thesis <: BibType end
 struct Unpublished <: BibType end
 
-
 # ----------------------------------------------------------------------------------------------- #
 #
 typeDict = Dict(
