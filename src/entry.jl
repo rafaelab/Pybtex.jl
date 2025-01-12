@@ -224,7 +224,6 @@ function getDOI(entry::BibEntry)
 	return removeCurlyBracesLimiters(doi)
 end
 
-
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
@@ -239,7 +238,6 @@ function getArXiv(entry::BibEntry)
 
 	return removeCurlyBracesLimiters(arXiv)
 end
-
 
 # ----------------------------------------------------------------------------------------------- #
 #
@@ -321,20 +319,43 @@ end
 @doc """
 This function returns the file name(s) of the publication.
 """
-function getFileName(entry::BibEntry, libraryFolder::String)
+function getFileName(entry::BibEntry; libraryFolder::AbstractString = "")
 	if ! hasField(entry, "file")
 		@warn "No file(s) available for \"$(entry.key)\"."
 		return ""
+	end
+
+	function parseFileName(file::AbstractString)
+		if first(file) == ':'
+			file = file[2 : end]
+		end
+		file = replace(file, ":PDF" => "")
+
+		if libraryFolder ≠ ""
+			file = joinpath(libraryFolder, file)
+		end
+
+		return file
 	end
 
 	s = stringPy2Jl(entry.info.fields["file"])
 	f = split(s, ";")
 
 	if length(f) == 1
-		return f[1]
+		file = f[1]
+		file = parseFileName(file)
+		return file
+
 	else
-		return f
+		files = []
+		for f_ in f
+			file = f_
+			file = parseFileName(file)
+			push!(files, file)
+		end
+		return files
 	end
+
 end
 
 # ----------------------------------------------------------------------------------------------- #
