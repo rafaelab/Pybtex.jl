@@ -63,6 +63,7 @@ getTypeName(::Type{Misc}) = "misc"
 getTypeName(::Type{PhDThesis}) = "phdthesis"
 getTypeName(::Type{Proceedings}) = "proceedings"
 getTypeName(::Type{TechReport}) = "techreport"
+getTypeName(::Type{Thesis}) = "thesis"
 getTypeName(::Type{Unpublished}) = "unpublished"
 
 
