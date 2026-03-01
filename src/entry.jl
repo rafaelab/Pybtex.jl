@@ -275,7 +275,7 @@ function getADSURL(entry::BibEntry)
 	end
 
 	url = stringPy2Jl(entry.info.fields["adsurl"])
-	url = replace(url, "\\", "")
+	url = replace(url, "\\" => "")
 
 	return removeCurlyBracesLimiters(url)
 end
