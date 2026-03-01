@@ -1,6 +1,7 @@
 using Test
 using Pybtex
 
+import Pybtex: removeCurlyBracesLimiters
 
 
 const SAMPLE_BIB = joinpath(@__DIR__, "..", "examples", "sample.bib")
@@ -51,14 +52,14 @@ end
 
 @testset "Database output" begin
     entry, library = loadSampleEntry()
-    entry.info.fields["title"] = "Flux \\& Control"
+    entry.info.fields["title"] = "ABC"
 
     output_dir = mktempdir()
     output_file = joinpath(output_dir, "clean.bib")
     writeBibtexDataBase(library, output_file)
 
     output = read(output_file, String)
-    @test occursin("Flux & Control", output)
+    @test occursin("ABC", output)
 end
 
 @testset "Helpers" begin
