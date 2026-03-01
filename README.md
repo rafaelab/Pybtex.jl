@@ -6,7 +6,7 @@ Pybtex.jl is a small Julia wrapper around [pybtex](https://pybtex.org/) that mak
 1. Add the package to your environment (or point to a local checkout while developing):
    ```julia
    using Pkg
-   Pkg.add(path=".")
+   Pkg.add(; path = ".")
    ```
 2. Install the Python dependency:
    ```bash
@@ -39,9 +39,6 @@ Install the Python dependency and run the bundled tests:
 python -m pip install pybtex
 julia --project=. -e 'using Pkg; Pkg.test()'
 ```
-
-## Continuous integration
-GitHub Actions runs the same test command on every push and pull request via `.github/workflows/ci.yml`.
 
 ## Examples
 Play with `examples/examples.jl` to see a minimal script, and inspect `examples/sample.bib` for a sample BibTeX entry.
