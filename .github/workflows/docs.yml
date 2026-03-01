@@ -2,7 +2,7 @@ name: Docs
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
   workflow_dispatch:
 
@@ -13,6 +13,8 @@ concurrency:
 jobs:
   docs:
     runs-on: ubuntu-latest
+    env:
+      PYTHONCALL_EXE: python
     permissions:
       contents: write
     steps:
@@ -30,12 +32,8 @@ jobs:
           version: '1.12'
       - uses: julia-actions/cache@v1
 
-      - name: Install non-public dependency
-        run: julia -e 'using Pkg; Pkg.develop(PackageSpec(; path = "https://github.com/rafaelab/Zettel.jl.git"))'
-
       - name: Build and deploy docs
         uses: julia-actions/julia-docdeploy@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_DEVBRANCH: ${{ github.ref_name }}
-
