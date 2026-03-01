@@ -22,7 +22,7 @@ end
     @test ! hasField(entry, "publisher")
     @test getURL(entry) == ""
     @test occursin("@ARTICLE", getBibTeX(entry))
-    @test "title" in getAllFields(entry)
+    @test "title" ∈ getAllFields(entry)
 end
 
 @testset "Person helpers" begin
