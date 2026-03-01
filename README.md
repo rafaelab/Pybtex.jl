@@ -1,32 +1,50 @@
 # Pybtex.jl
 
+Pybtex.jl is a small Julia wrapper around [pybtex](https://pybtex.org/) that makes it easy to read, inspect, and rewrite BibTeX data without leaving the Julia REPL.
 
-This is a Julia wrapper for [pybtex](https://pybtex.org/).
+## Installation
+1. Add the package to your environment (or point to a local checkout while developing):
+   ```julia
+   using Pkg
+   Pkg.add(path=".")
+   ```
+2. Install the Python dependency:
+   ```bash
+   python -m pip install pybtex
+   ```
+3. Instantiate the Julia environment and grab the dependencies:
+   ```bash
+   julia --project=. -e 'using Pkg; Pkg.instantiate()'
+   ```
 
-It contains very basic features in a convenient form.
-Note that the list of journal abbreviations I added here are mostly for the astro/particle community, since this package is for personal usage.
-
-The design is meant to be used for various purposes, including exporting the BibTeX library (or part of it) to a convenient format.
-Another interesting application is to create a list of publications in LaTeX to accompany a CV, for example.
-
-
-
-## Examples
-
-This example is available in the folder `examples`.
-```
+## Usage
+```julia
 using Pybtex
 
-
-library = readBibtexDataBase("sample.bib")
-
-key = "sample"
-entry = getEntry(library, key)
+library = readBibtexDataBase("examples/sample.bib")
+entry = getEntry(library, "sample")
+println(getTitle(entry))
+println(getJournal(entry))
+println(getAuthors(entry)[1])
 ```
-This will print information about the BibTeX entry `sample`.
 
+The package exports helpers such as `getTitle`, `getJournal`, `getDOI`, `getFileName`, and `getBibTeX` so you can query the metadata you care about without touching the Python API directly.
 
+## Documentation
+Full documentation and API notes live in `docs/README.md`.
+
+## Testing
+Install the Python dependency and run the bundled tests:
+```bash
+python -m pip install pybtex
+julia --project=. -e 'using Pkg; Pkg.test()'
+```
+
+## Continuous integration
+GitHub Actions runs the same test command on every push and pull request via `.github/workflows/ci.yml`.
+
+## Examples
+Play with `examples/examples.jl` to see a minimal script, and inspect `examples/sample.bib` for a sample BibTeX entry.
 
 ## Known problems
-
-Accents are not working very well.
+- Accents are not working very well.
