@@ -1,0 +1,86 @@
+name: Release on new version
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    # only run when CI concluded successfully on main
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout commit that passed CI
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Detect version bump in Project.toml
+        id: versioncheck
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          CURRENT_SHA="${{ github.event.workflow_run.head_sha }}"
+          PREV_SHA="$(git rev-parse "${CURRENT_SHA}^" 2>/dev/null || true)"
+
+          if [ -z "$PREV_SHA" ]; then
+            echo "No previous commit found; skipping."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if ! git diff --name-only "$PREV_SHA" "$CURRENT_SHA" | grep -q '^Project.toml$'; then
+            echo "Project.toml not changed."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          OLD_VERSION="$(git show "${PREV_SHA}:Project.toml" | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)"
+          NEW_VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' Project.toml | head -n1)"
+
+          if [ -z "$NEW_VERSION" ]; then
+            echo "Could not read new version; skipping."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$OLD_VERSION" = "$NEW_VERSION" ]; then
+            echo "Version unchanged ($NEW_VERSION)."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Version changed: $OLD_VERSION -> $NEW_VERSION"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Check if tag already exists
+        if: steps.versioncheck.outputs.changed == 'true'
+        id: tagexists
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="v${{ steps.versioncheck.outputs.version }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub Release
+        if: steps.versioncheck.outputs.changed == 'true' && steps.tagexists.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.versioncheck.outputs.version }}
+          target_commitish: ${{ github.event.workflow_run.head_sha }}
+          generate_release_notes: true
+          name: v${{ steps.versioncheck.outputs.version }}
