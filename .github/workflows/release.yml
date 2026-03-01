@@ -29,6 +29,24 @@ jobs:
         run: |
           set -euo pipefail
 
+          normalize_semver() {
+            local version="$1"
+            IFS='.' read -r major minor patch extra <<< "$version"
+
+            if [ -n "${extra:-}" ]; then
+              echo "$version"
+              return
+            fi
+
+            if [ -z "${minor:-}" ]; then
+              echo "${major}.0.0"
+            elif [ -z "${patch:-}" ]; then
+              echo "${major}.${minor}.0"
+            else
+              echo "${major}.${minor}.${patch}"
+            fi
+          }
+
           CURRENT_SHA="${{ github.event.workflow_run.head_sha }}"
           PREV_SHA="$(git rev-parse "${CURRENT_SHA}^" 2>/dev/null || true)"
 
@@ -46,6 +64,8 @@ jobs:
 
           OLD_VERSION="$(git show "${PREV_SHA}:Project.toml" | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)"
           NEW_VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' Project.toml | head -n1)"
+          OLD_VERSION="$(normalize_semver "$OLD_VERSION")"
+          NEW_VERSION="$(normalize_semver "$NEW_VERSION")"
 
           if [ -z "$NEW_VERSION" ]; then
             echo "Could not read new version; skipping."
