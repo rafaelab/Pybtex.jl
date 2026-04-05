@@ -11,7 +11,6 @@ function removeCurlyBracesLimiters(s::AbstractString)
 	if r[end] == '}'
 		r = replace(r, "}" => "")
 	end
-	
 	return r
 end
 

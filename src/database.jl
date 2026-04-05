@@ -1,7 +1,11 @@
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
-This provides a simple interface to read and manipulate bibtex databases.
+	BibLibrary
+
+This provides a simple interface to read and manipulate bibtex databases. 
+It enables access the entries in the database and to perform common operations such as adding, removing, and retrieving entries.
+This is a wrapper around the `pybtex.database.BibliographyData` class, which is used to store the entries in the database.
 """
 struct BibLibrary
 	db
@@ -10,14 +14,14 @@ end
 BibLibrary() = BibLibrary(pyimport("pybtex.database").BibliographyData())
 
 
-function BibLibrary(entries::Vector{T}) where {T <: BibEntry}
+BibLibrary(entries::Vector{T}) where {T <: BibEntry} = begin
 	db = pydb.BibliographyData()
-	for entry in entries
+	for entry ∈ entries
 		db.entries[entry.key] = entry
 	end
-	
 	return BibLibrary(db)
 end
+
 
 # ----------------------------------------------------------------------------------------------- #
 #
@@ -40,7 +44,7 @@ Base.getindex(db::BibLibrary, key::AbstractString) = db.entries[key]
 @doc """
 Returns the keys of the entries in the database.
 """
-Base.keys(db::BibLibrary) = String[stringPy2Jl(key) for key in db.entries.keys()]
+Base.keys(db::BibLibrary) = String[stringPy2Jl(key) for key ∈ db.entries.keys()]
 
 
 # ----------------------------------------------------------------------------------------------- #
@@ -56,7 +60,7 @@ Base.pop!(db::BibLibrary, key::AbstractString) = db.entries.pop(key)
 @doc """
 Insert an entry into the database.
 """
-function Base.insert!(db::BibLibrary, entry::BibEntry) 
+Base.insert!(db::BibLibrary, entry::BibEntry) = begin
 	db.entries[entry.key] = entry.info
 end
 
@@ -81,7 +85,7 @@ Base.values(db::BibLibrary) = [db[key] for key in keys(db)]
 @doc """
 Iterate over the entries in the BibLibrary.
 """
-function Base.iterate(db::BibLibrary, state = 1)
+function Base.iterate(db::BibLibrary; state = 1)
     keysIter = collect(keys(db))
     if state > length(keysIter)
         return nothing
@@ -109,7 +113,16 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getEntry(bib::BibLibrary, key)
+
 This function returns a BibTeX entry from a BibTeX library.
+
+# Input
+- `bib::BibLibrary`: the BibTeX library to search for the entry
+- `key`: the key of the entry to retrieve
+
+# Output
+- A `BibEntry` object corresponding to the entry with the specified key in the BibTeX library.
 """
 function getEntry(bib::BibLibrary, key) 
 	t = stringPy2Jl(bib.entries[key].type)
@@ -121,18 +134,37 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	readBibtexDataBase(filename::String)
+
 Reads a bibtex database from a file and returns a `BibLibrary` object.
+
+# Input
+- `filename::String`: the name of the file to read the bibtex database from
+
+# Output
+- A `BibLibrary` object containing the entries in the bibtex database.
 """
 function readBibtexDataBase(filename::String)
 	style = pyimport("pybtex.plugin").find_plugin("pybtex.style.formatting", "plain")()
 	parser = pyimport("pybtex.database.input.bibtex").Parser()
 	d = parser.parse_file(filename)
-
 	return BibLibrary(d)
 end
 
 # ----------------------------------------------------------------------------------------------- #
 #
+@doc """
+	writeBibtexDataBase(bib::BibLibrary, filename::String)
+
+Writes a `BibLibrary` object to a file in bibtex format.
+
+# Input
+- `bib::BibLibrary`: the `BibLibrary` object to write to a file
+- `filename::String`: the name of the file to write the `BibLibrary` object to
+
+# Output
+- A file in bibtex format containing the entries in the `BibLibrary` object.
+"""
 function writeBibtexDataBase(bib::BibLibrary, filename::String)
 	libraryStr = pyconvert(String, bib.db.to_string(bib_format = "bibtex"))
 
@@ -150,7 +182,7 @@ function writeBibtexDataBase(bib::BibLibrary, filename::String)
 		)
 
 	libraryStr2 = libraryStr
-	for key in keys(items)
+	for key ∈ keys(items)
 		libraryStr2 = replace(libraryStr2, key => items[key])
 	end
 
