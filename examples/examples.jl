@@ -4,7 +4,7 @@ using Pybtex
 
 
 
-library = readBibtexDataBase("sample.bib")
+library = readBibtexDataBase(joinpath(@__DIR__, "sample.bib"))
 
 key = "sample"
 entry = getEntry(library, key)
