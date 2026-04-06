@@ -45,7 +45,6 @@ using PythonCall
 pybtex = pyimport("pybtex")
 
 include("common.jl")
-include("journals.jl")
 include("person.jl")
 include("types.jl")
 include("entry.jl")
