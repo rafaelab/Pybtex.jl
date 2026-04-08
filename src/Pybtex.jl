@@ -23,7 +23,7 @@ export
 	getSchool,
 	getArxiv,
 	getDoi,
-	getURL,
+	getUrl,
 	getIsbn,
 	getAdsUrl,
 	getEId,

@@ -253,7 +253,7 @@ end
 
 This function returns the DOI of the publication.
 """
-function getDOI(entry::BibEntry)
+function getDoi(entry::BibEntry)
 	if ! hasField(entry, "doi")
 		return ""
 	end
@@ -385,14 +385,14 @@ function getFileName(entry::BibEntry; libraryFolder::AbstractString = "")
 
 	if length(f) == 1
 		file = f[1]
-		file = _parseFileName(file)
+		file = _parseFileName(file, libraryFolder)
 		return file
 
 	else
 		files = []
 		for f_ ∈ f
 			file = f_
-			file = _parseFileName(file)
+			file = _parseFileName(file, libraryFolder)
 			push!(files, file)
 		end
 		return files
@@ -401,7 +401,7 @@ function getFileName(entry::BibEntry; libraryFolder::AbstractString = "")
 end
 
 
-function _parseFileName(file::AbstractString)
+function _parseFileName(file::AbstractString, libraryFolder::AbstractString)
 	if first(file) == ':'
 		file = file[2 : end]
 	end
