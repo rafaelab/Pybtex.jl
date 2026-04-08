@@ -5,13 +5,20 @@ using OrderedCollections
 import Pybtex: removeCurlyBracesLimiters
 
 
+
+# ----------------------------------------------------------------------------------------------- #
+#
 const SAMPLE_BIB = joinpath(@__DIR__, "..", "examples", "sample.bib")
+
 
 function loadSampleEntry()
     library = readBibtexDataBase(SAMPLE_BIB)
     return getEntry(library, "sample"), library
 end
 
+
+# ----------------------------------------------------------------------------------------------- #
+#
 @testset "Entry metadata" begin
     entry, _ = loadSampleEntry()
 
@@ -26,6 +33,9 @@ end
     @test "title" ∈ getAllFields(entry)
 end
 
+
+# ----------------------------------------------------------------------------------------------- #
+#
 @testset "Person helpers" begin
     entry, _ = loadSampleEntry()
     authors = getAuthors(entry)
@@ -36,6 +46,9 @@ end
     @test author.lastName == "Einstein"
 end
 
+
+# ----------------------------------------------------------------------------------------------- #
+#
 @testset "URL and file helpers" begin
     entry, _ = loadSampleEntry()
 
@@ -51,6 +64,9 @@ end
     @test files == [joinpath("/tmp", "first.pdf"), joinpath("/tmp", "second.pdf")]
 end
 
+
+# ----------------------------------------------------------------------------------------------- #
+#
 @testset "Database output" begin
     entry, library = loadSampleEntry()
     entry.info.fields["title"] = "ABC"
@@ -63,9 +79,12 @@ end
     @test occursin("ABC", output)
 end
 
+
+# ----------------------------------------------------------------------------------------------- #
+#
 @testset "Entry to OrderedDict" begin
     entry, _ = loadSampleEntry()
-    d = pybtexEntryToDict(entry)
+    d = bibEntryToDict(entry)
 
     @test d isa OrderedDict{String, Any}
     @test collect(keys(d)) == ["key", "type", "fields"]
@@ -79,6 +98,12 @@ end
     @test fields["doi"] == "10.1002/andp.19053221004"
 end
 
+
+# ----------------------------------------------------------------------------------------------- #
+#
 @testset "Helpers" begin
     @test removeCurlyBracesLimiters("{value}") == "value"
 end
+
+
+# ----------------------------------------------------------------------------------------------- #
