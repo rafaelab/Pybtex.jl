@@ -1,6 +1,8 @@
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	removeCurlyBracesLimiters(s::AbstractString) -> String
+
 This function fixes the strings from the bibtex file.
 """
 function removeCurlyBracesLimiters(s::AbstractString)

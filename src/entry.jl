@@ -1,6 +1,8 @@
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	BibEntry{T <: BibType}
+
 This object represents a BibTeX entry. 
 It is a wrapper around pybtex's `pybtex.database.Entry` object, connecting it with its corresponding key.
 """
@@ -13,6 +15,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	Base.eltype(::Type{BibEntry{T}}) -> T
+
 This function returns the type of the BibTeX entry.
 """
 Base.eltype(::Type{BibEntry{T}}) where {T} = T
@@ -20,6 +24,8 @@ Base.eltype(::Type{BibEntry{T}}) where {T} = T
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	hasField(entry::BibEntry, field::String) -> Bool
+
 This function checks if a field is present in a BibTeX entry.
 """
 @inline hasField(entry::BibEntry, field::String) = haskey(pyconvert(Dict, entry.info.fields), lowercase(field))
@@ -27,6 +33,8 @@ This function checks if a field is present in a BibTeX entry.
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getType(entry::BibEntry) -> String
+
 This function returns the type of a BibTeX entry.
 """
 @inline getType(::BibEntry{T}) where {T} = getTypeName(T)
@@ -35,9 +43,10 @@ This function returns the type of a BibTeX entry.
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getAuthors(entry::BibEntry) -> Vector{PersonName}
+
 This function returns the authors of a BibTeX entry.
 The authors are returned as a vector of `PersonName` objects.
-
 If the authors field is not present, but editors are found, the editors are returned instead.
 """
 function getAuthors(entry::BibEntry)
@@ -51,7 +60,7 @@ function getAuthors(entry::BibEntry)
 	end
 
 	names = []
-	for author in entry.info.persons["author"]
+	for author ∈ entry.info.persons["author"]
 		name = pybtexToPersonName(author)
 		push!(names, name)
 	end
@@ -62,6 +71,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getEditors(entry::BibEntry) -> Vector{PersonName}
+
 This function returns the editors of a BibTeX entry.
 The editors are returned as a vector of `PersonName` objects.
 """
@@ -76,7 +87,7 @@ function getEditors(entry::BibEntry)
 	end
 
 	names = []
-	for editor in editors
+	for editor ∈ editors
 		name = pybtexToPersonName(editor)
 		push!(names, name)
 	end
@@ -87,6 +98,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getTitle(entry::BibEntry) -> String
+
 This function returns the title of a BibTeX entry, if available.
 """
 function getTitle(entry::BibEntry)
@@ -120,6 +133,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getYear(entry::BibEntry) -> String
+
 This function returns the year of the publication.
 """
 function getYear(entry::BibEntry)
@@ -134,6 +149,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getJournal(entry::BibEntry) -> String
+
 This function returns the journal where the publication was published.
 """
 function getJournal(entry::BibEntry)
@@ -148,6 +165,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getVolume(entry::BibEntry) -> String
+
 This function returns the volume of the publication.
 """
 function getVolume(entry::BibEntry)
@@ -157,6 +176,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getNumber(entry::BibEntry) -> String
+
 This function returns the number of the publication.
 """
 function getNumber(entry::BibEntry)
@@ -166,6 +187,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getPages(entry::BibEntry) -> String
+
 This function returns the pages of the publication.
 """
 function getPages(entry::BibEntry)
@@ -175,6 +198,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getEdition(entry::BibEntry) -> String
+
 This function returns the edition of the publication.
 """
 function getEdition(entry::BibEntry)
@@ -184,6 +209,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getEId(entry::BibEntry) -> String
+
 This function returns the electronic identifier of the publication.
 """
 function getEId(entry::BibEntry)
@@ -194,6 +221,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getLocation(entry::BibEntry) -> String
+
 This function returns the location of the publication.
 """
 function getLocation(entry::BibEntry)
@@ -203,6 +232,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getPublisher(entry::BibEntry) -> String
+
 This function returns the publisher of the publication.
 """
 function getPublisher(entry::BibEntry)
@@ -218,6 +249,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getDOI(entry::BibEntry) -> String
+
 This function returns the DOI of the publication.
 """
 function getDOI(entry::BibEntry)
@@ -233,9 +266,11 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getArxiv(entry::BibEntry) -> String
+
 Get arXiv number, assuming it is in the eprint field.
 """
-function getArXiv(entry::BibEntry)
+function getArxiv(entry::BibEntry)
 	if ! hasField(entry, "eprint")
 		return ""
 	end
@@ -248,9 +283,11 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getUrl(entry::BibEntry) -> String
+
 This function returns the URL of the publication.
 """
-function getURL(entry::BibEntry)
+function getUrl(entry::BibEntry)
 	if ! hasField(entry, "url")
 		return ""
 	end
@@ -262,9 +299,11 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getIsbn(entry::BibEntry) -> String
+
 This function returns the ISBN of the publication.
 """
-function getISBN(entry::BibEntry)
+function getIsbn(entry::BibEntry)
 	isbn = hasField(entry, "isbn") ? stringPy2Jl(entry.info.fields["isbn"]) : ""
 	return removeCurlyBracesLimiters(isbn)
 end
@@ -273,9 +312,11 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getAdsUrl(entry::BibEntry) -> String
+
 This function returns the ADS URL of the publication.
 """
-function getADSURL(entry::BibEntry)
+function getAdsUrl(entry::BibEntry)
 	if ! hasField(entry, "adsurl")
 		return ""
 	end
@@ -289,6 +330,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getAbstract(entry::BibEntry) -> String
+
 This function returns the abstract of the publication, if available.
 """
 function getAbstract(entry::BibEntry)
@@ -298,6 +341,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getKeywords(entry::BibEntry) -> String
+
 This function returns the keywords of the publication, if available.
 """
 function getKeywords(entry::BibEntry)
@@ -307,6 +352,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getSchool(entry::BibEntry) -> String
+
 This function returns the school of the publication, if available.
 This is common for theses.
 """
@@ -323,6 +370,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getFileName(entry::BibEntry; libraryFolder::AbstractString = "") -> String or Vector{String}
+
 This function returns the file name(s) of the publication.
 """
 function getFileName(entry::BibEntry; libraryFolder::AbstractString = "")
@@ -331,32 +380,19 @@ function getFileName(entry::BibEntry; libraryFolder::AbstractString = "")
 		return ""
 	end
 
-	function parseFileName(file::AbstractString)
-		if first(file) == ':'
-			file = file[2 : end]
-		end
-		file = replace(file, ":PDF" => "")
-
-		if libraryFolder ≠ ""
-			file = joinpath(libraryFolder, file)
-		end
-
-		return file
-	end
-
 	s = stringPy2Jl(entry.info.fields["file"])
 	f = split(s, ";")
 
 	if length(f) == 1
 		file = f[1]
-		file = parseFileName(file)
+		file = _parseFileName(file)
 		return file
 
 	else
 		files = []
 		for f_ ∈ f
 			file = f_
-			file = parseFileName(file)
+			file = _parseFileName(file)
 			push!(files, file)
 		end
 		return files
@@ -364,12 +400,28 @@ function getFileName(entry::BibEntry; libraryFolder::AbstractString = "")
 
 end
 
+
+function _parseFileName(file::AbstractString)
+	if first(file) == ':'
+		file = file[2 : end]
+	end
+	file = replace(file, ":PDF" => "")
+
+	if libraryFolder ≠ ""
+		file = joinpath(libraryFolder, file)
+	end
+
+	return file
+end
+
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getBibtex(entry::BibEntry) -> String
+
 This function returns the BibTeX representation of the entry.
 """
-function getBibTeX(entry::BibEntry)
+function getBibtex(entry::BibEntry)
 	return string(entry.info.to_string("bibtex"))
 end
 
@@ -377,6 +429,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	getAllFields(entry::BibEntry) -> Vector{String}
+
 This function returns all fields of a BibTeX entry.
 """
 function getAllFields(entry::BibEntry)
@@ -386,6 +440,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	numberOfAuthors(entry::BibEntry) -> Int64
+
 This function returns the number of authors of a BibTeX entry.
 """
 function numberOfAuthors(entry::BibEntry)
@@ -396,6 +452,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	numberOfEditors(entry::BibEntry) -> Int64
+
 This function returns the number of editors of a BibTeX entry.
 """
 function numberOfEditors(entry::BibEntry)
@@ -407,6 +465,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	bibEntryToDict(entry::BibEntry) -> OrderedDict{String, Any}
+
 This function converts a BibTeX entry to an `OrderedDict`.
 The dictionary has the keys: `key`, `type`, and `fields`.
 """

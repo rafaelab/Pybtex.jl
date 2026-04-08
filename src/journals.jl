@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------------------------- #
 #
-journalsAbbreviations = Dict{String, String}(
+const journalsAbbreviations = Dict{String, String}(
 	"aap" => "Astron. Astrophys.",
 	"aj" => "Astron. J.",
 	"actaa" => "Acta Astron.",
@@ -46,7 +46,7 @@ journalsAbbreviations = Dict{String, String}(
 	"ssr" => "Space Sci. Rev.",
 	)
 
-journalFullNames = Dict{String, String}(
+const journalFullNames = Dict{String, String}(
 	"aap" => "Astronomy and Astrophysics",
 	"aj" => "Astronomical Journal",
 	"actaa" => "Acta Astronomica",
@@ -95,6 +95,8 @@ journalFullNames = Dict{String, String}(
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	journalAbbreviationFromTag(tag::String) -> String
+
 Returns the journal abbreviation from the tag.
 For example, the tag "apj" returns "Astrophys. J.".
 """
@@ -110,6 +112,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	journalFullNameFromTag(tag::String) -> String
+
 Returns the journal full name from the tag.
 For example, the tag "apj" returns "Astrophysical Journal".
 """
@@ -125,6 +129,8 @@ end
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	journalTagFromFullName(fullName::String) -> String
+
 Returns the journal tag from the full name.
 For example, the full name "Astrophysical Journal" returns "apj".
 This is essentially an inversion of `journalFullNameFromTag`.
@@ -141,7 +147,7 @@ function journalTagFromFullName(fullName::String)
 		journalName = correctionDict[fullName]
 	end
 
-	for (tag, name) in journalFullNames
+	for (tag, name) ∈ journalFullNames
 		if name == journalName
 			return tag
 		end

@@ -1,7 +1,15 @@
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
-Module for handling person names.
+	PersonName
+
+Struct to represent a person's name with first, middle, last names and an optional suffix.
+
+# Fields
+- `firstName::String` : person's first name
+- `middleName::String` : person's middle name(s)
+- `lastName::String` : person's last name
+- `suffix::String` : optional suffix (e.g. "Jr.", "III")
 """
 struct PersonName
 	firstName::String
@@ -18,6 +26,8 @@ PersonName(firstName::String, lastName::String) = PersonName(firstName, "", last
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
+	pybtexToPersonName(author) -> PersonName
+
 Converts a Pybtex person object to a `PersonName` object.
 """
 function pybtexToPersonName(author)
