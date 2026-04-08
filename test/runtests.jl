@@ -26,10 +26,10 @@ end
     @test getJournal(entry) == "Annalen der Physik"
     @test getYear(entry) == "1905"
     @test hasField(entry, "doi")
-    @test getDOI(entry) == "10.1002/andp.19053221004"
+    @test getDoi(entry) == "10.1002/andp.19053221004"
     @test ! hasField(entry, "publisher")
-    @test getURL(entry) == ""
-    @test occursin("@ARTICLE", getBibTeX(entry))
+    @test getUrl(entry) == ""
+    @test occursin("@ARTICLE", getBibtex(entry))
     @test "title" ∈ getAllFields(entry)
 end
 
@@ -53,11 +53,11 @@ end
     entry, _ = loadSampleEntry()
 
     entry.info.fields["adsurl"] = raw"\https://example.test/path"
-    @test getADSURL(entry) == "https://example.test/path"
+    @test getAdsUrl(entry) == "https://example.test/path"
 
     entry.info.fields["file"] = ":paper.pdf:PDF"
-    file_path = getFileName(entry, libraryFolder = "/tmp")
-    @test file_path == joinpath("/tmp", "paper.pdf")
+    filePath = getFileName(entry, libraryFolder = "/tmp")
+    @test filePath == joinpath("/tmp", "paper.pdf")
 
     entry.info.fields["file"] = ":first.pdf:PDF;:second.pdf:PDF"
     files = getFileName(entry, libraryFolder = "/tmp")
