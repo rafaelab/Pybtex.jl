@@ -10,9 +10,9 @@ end
 BibLibrary() = BibLibrary(pyimport("pybtex.database").BibliographyData())
 
 
-function BibLibrary(entries::Vector{T}) where {T <: BibEntry}
+BibLibrary(entries::Vector{T}) where {T <: BibEntry} = begin
 	db = pydb.BibliographyData()
-	for entry in entries
+	for entry ∈ entries
 		db.entries[entry.key] = entry
 	end
 	
@@ -40,7 +40,7 @@ Base.getindex(db::BibLibrary, key::AbstractString) = db.entries[key]
 @doc """
 Returns the keys of the entries in the database.
 """
-Base.keys(db::BibLibrary) = String[stringPy2Jl(key) for key in db.entries.keys()]
+Base.keys(db::BibLibrary) = String[stringPy2Jl(key) for key ∈ db.entries.keys()]
 
 
 # ----------------------------------------------------------------------------------------------- #
@@ -56,10 +56,9 @@ Base.pop!(db::BibLibrary, key::AbstractString) = db.entries.pop(key)
 @doc """
 Insert an entry into the database.
 """
-function Base.insert!(db::BibLibrary, entry::BibEntry) 
-	db.entries[entry.key] = entry.info
+Base.insert!(db::BibLibrary, entry::BibEntry) = begin
+	db.entries[entry.key] = entry
 end
-
 
 # ----------------------------------------------------------------------------------------------- #
 #
@@ -73,7 +72,7 @@ Base.haskey(db::BibLibrary, key::AbstractString) = key ∈ keys(db)
 @doc """
 Return a vector of all values in the database
 """
-Base.values(db::BibLibrary) = [db[key] for key in keys(db)]
+Base.values(db::BibLibrary) = [db[key] for key ∈ keys(db)]
 
 
 # ----------------------------------------------------------------------------------------------- #
@@ -81,7 +80,7 @@ Base.values(db::BibLibrary) = [db[key] for key in keys(db)]
 @doc """
 Iterate over the entries in the BibLibrary.
 """
-function Base.iterate(db::BibLibrary, state = 1)
+function Base.iterate(db::BibLibrary; state = 1)
     keysIter = collect(keys(db))
     if state > length(keysIter)
         return nothing
@@ -133,6 +132,9 @@ end
 
 # ----------------------------------------------------------------------------------------------- #
 #
+@doc """
+Writes a `BibLibrary` object to a file in BibTeX format.
+"""
 function writeBibtexDataBase(bib::BibLibrary, filename::String)
 	libraryStr = pyconvert(String, bib.db.to_string(bib_format = "bibtex"))
 
@@ -150,7 +152,7 @@ function writeBibtexDataBase(bib::BibLibrary, filename::String)
 		)
 
 	libraryStr2 = libraryStr
-	for key in keys(items)
+	for key ∈ keys(items)
 		libraryStr2 = replace(libraryStr2, key => items[key])
 	end
 
