@@ -22,16 +22,15 @@ Base.eltype(::Type{BibEntry{T}}) where {T} = T
 @doc """
 This function checks if a field is present in a BibTeX entry.
 """
-hasField(entry::BibEntry, field::String) = haskey(pyconvert(Dict, entry.info.fields), lowercase(field))
+@inline hasField(entry::BibEntry, field::String) = haskey(pyconvert(Dict, entry.info.fields), lowercase(field))
 
 # ----------------------------------------------------------------------------------------------- #
 #
 @doc """
 This function returns the type of a BibTeX entry.
 """
-function getType(::BibEntry{T}) where {T} 
-	return getTypeName(T)
-end
+@inline getType(::BibEntry{T}) where {T} = getTypeName(T)
+
 
 # ----------------------------------------------------------------------------------------------- #
 #
@@ -87,6 +86,9 @@ end
 
 # ----------------------------------------------------------------------------------------------- #
 #
+@doc """
+This function returns the title of a BibTeX entry, if available.
+"""
 function getTitle(entry::BibEntry)
 	if ! hasField(entry, "title")
 		@warn "No title field in entry \"$(entry.key)\"."
@@ -100,6 +102,10 @@ end
 
 # ----------------------------------------------------------------------------------------------- #
 #
+@doc """
+This function returns the book title of a BibTeX entry, if available.
+This is common for conference proceedings.
+"""
 function getBookTitle(entry::BibEntry)
 	if ! hasField(entry, "title")
 		@warn "No booktitle field in entry \"$(entry.key)\"."
@@ -348,7 +354,7 @@ function getFileName(entry::BibEntry; libraryFolder::AbstractString = "")
 
 	else
 		files = []
-		for f_ in f
+		for f_ ∈ f
 			file = f_
 			file = parseFileName(file)
 			push!(files, file)
@@ -396,6 +402,29 @@ function numberOfEditors(entry::BibEntry)
 	editors = getEditors(entry)
 	return length(editors)
 end
+
+
+# ----------------------------------------------------------------------------------------------- #
+#
+@doc """
+This function converts a BibTeX entry to an `OrderedDict`.
+The dictionary has the keys: `key`, `type`, and `fields`.
+"""
+function bibEntryToDict(entry::BibEntry)
+	fields = OrderedDict{String, String}()
+	for k ∈ pyconvert(Vector{String}, entry.info.fields.keys())
+		fields[k] = stringPy2Jl(entry.info.fields[k])
+	end
+
+	fields["title"] = removeCurlyBracesLimiters(fields["title"])
+
+	return OrderedDict{String, Any}(
+		"key" => entry.key,
+		"type" => getType(entry),
+		"fields" => fields
+	)
+end
+
 
 # ----------------------------------------------------------------------------------------------- #
 #

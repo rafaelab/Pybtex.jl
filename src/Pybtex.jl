@@ -31,6 +31,7 @@ export
 	getKeywords,
 	getFileName,
 	getBibTeX,
+	bibEntryToDict,
 	getType,
 	numberOfAuthors,
 	numberOfEditors,
@@ -38,6 +39,7 @@ export
 
 
 using LaTeXStrings
+using OrderedCollections
 using Printf
 using PythonCall
 

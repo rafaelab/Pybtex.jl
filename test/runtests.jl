@@ -1,5 +1,6 @@
 using Test
 using Pybtex
+using OrderedCollections
 
 import Pybtex: removeCurlyBracesLimiters
 
@@ -60,6 +61,22 @@ end
 
     output = read(output_file, String)
     @test occursin("ABC", output)
+end
+
+@testset "Entry to OrderedDict" begin
+    entry, _ = loadSampleEntry()
+    d = pybtexEntryToDict(entry)
+
+    @test d isa OrderedDict{String, Any}
+    @test collect(keys(d)) == ["key", "type", "fields"]
+    @test d["key"] == "sample"
+    @test d["type"] == "article"
+
+    fields = d["fields"]
+    @test fields isa OrderedDict{String, String}
+    @test occursin("Zur Elektrodynamik bewegter", fields["title"])
+    @test fields["year"] == "1905"
+    @test fields["doi"] == "10.1002/andp.19053221004"
 end
 
 @testset "Helpers" begin
