@@ -11,10 +11,10 @@ Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 PythonCall = "6099a3de-0909-46bc-b1f4-468b9a2dfc0d"
 
 [compat]
-LaTeXStrings = "1.4.0"
-OrderedCollections = "1.8.1"
-Printf = ">=1.10, <1.12"
-PythonCall = "0.9.23"
+LaTeXStrings = "1.4"
+OrderedCollections = "1.8"
+Printf = "1.10 - 1.12"
+PythonCall = "0.9.23 - 0.9"
 
 [extras]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
