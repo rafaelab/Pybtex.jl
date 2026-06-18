@@ -14,7 +14,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      JULIA_PYTHONCALL_EXE: python3.12
+      JULIA_PYTHONCALL_EXE: python3.14
       JULIA_CONDAPKG_BACKEND: Null
     steps:
       - uses: actions/checkout@v4
